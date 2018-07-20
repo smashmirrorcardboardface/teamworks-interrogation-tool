@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.Extensions.Options;
+using dotnetVue.Helpers;
 using static TeamworksInterrogationTool.api.Services.TicketController;
 
 namespace dotnetVue.Models
@@ -23,9 +24,11 @@ namespace dotnetVue.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var configuration = ConfigurationHelper.GetConfiguration(System.IO.Directory.GetCurrentDirectory());
+
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source = tcp:teamworksarchiving.database.windows.net,1433; Database=TeamworksArchive; User ID = tw_sa; Password = antidil69T; Encrypt = True; TrustServerCertificate = True; Connection Timeout=30");
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("default"));
             }
         }
 

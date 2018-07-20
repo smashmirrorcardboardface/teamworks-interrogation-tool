@@ -49,7 +49,7 @@
                         </li>
                         <li>
                         <button v-on:click="filter" class="btn btn-secondary" style="margin-top:5px; float:right;">
-                            <span class='glyphicon glyphicon-th-list'></span> Filter Data
+                            <span class='glyphicon glyphicon-th-list'></span> Get Data
                         </button>
                         </li>
                     </ul>
@@ -86,15 +86,21 @@ export default {
       this.collapsed = !this.collapsed;
     },
     filter() {
-      let fromDateProper = moment(this.fromDate).format('YYYY-MM-DD');
-      let toDateProper = moment(this.toDate).format('YYYY-MM-DD');
+      let toDateProper = null;
+      let fromDateProper = null;
+      if (this.fromDate != null) {
+        fromDateProper = moment(this.fromDate).format('YYYY-MM-DD');
+      }
+      if (this.toDate != null) {
+        toDateProper = moment(this.toDate).format('YYYY-MM-DD');
+      }
       //console.log(fromDateProper.format());
       let queryString = `titanCompanyId=${
         this.titanCompanyId
       }&ticketReference=${this.ticketReference}&locationNumber=${
         this.locationNumber
-      }&toDate=${toDateProper ? toDateProper : 0}&fromDate=${
-        fromDateProper ? fromDateProper : 0
+      }&toDate=${toDateProper ? toDateProper : ''}&fromDate=${
+        fromDateProper ? fromDateProper : ''
       }`;
       //)}&fromDate=${encodeURIComponent(moment(this.fromDate))}`;
       console.log(queryString);

@@ -21,6 +21,8 @@ namespace dotnetVue
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            var connstr = Configuration.GetConnectionString("default");
         }
 
         public IConfigurationRoot Configuration { get; }
