@@ -34,7 +34,7 @@ namespace dotnetVue.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<List<AzureBlobItem>> GetBlobListAsync(bool useFlatListing = true)
+        public async Task<List<AzureBlobItem>> GetBlobListAsync(int ticketReference, bool useFlatListing = true)
         {
             //Container
             Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer blobContainer = await GetContainerAsync();
@@ -44,7 +44,7 @@ namespace dotnetVue.Controllers
             do
             {
                 BlobResultSegment resultSegment =
-                    await blobContainer.ListBlobsSegmentedAsync("1002318", useFlatListing, new BlobListingDetails(), 100, token, null, null);
+                    await blobContainer.ListBlobsSegmentedAsync(ticketReference.ToString(), useFlatListing, new BlobListingDetails(), 100, token, null, null);
                 token = resultSegment.ContinuationToken;
 
                 foreach (IListBlobItem item in resultSegment.Results)
