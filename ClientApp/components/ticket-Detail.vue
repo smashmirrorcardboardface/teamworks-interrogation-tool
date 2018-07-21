@@ -1,5 +1,5 @@
-﻿<template>
-    <div style="margin-top:10px;">
+﻿`<template>
+    <div style="margin-top:10px; float:left;">
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #0990ac; color:white;">
             <h2 class="panel-title" >Ticket# {{ ticket.ticketReference }} - {{ticket.categoryDescription}} / {{ticket.subCategoryDescription}}</h2>
@@ -47,7 +47,10 @@
             <h2 class="panel-title">Documents</h2>
             </div>
             <div style="max-height: 300px; min-height:100px; overflow-y: scroll;">
-                Docs Here...
+                    <div v-for="ticketDocument in ticketDocuments" :key="ticketDocument.blobName" style=" font-size: 1.2em; padding:6px; margin-left:10px; width:50%">
+                        <div style="float:left">{{ticketDocument.blobName}}</div>
+                        <a style="float:right; cursor:pointer;" :href="'/api/File/Download?blobName='+ticketDocument.blobName">Download <span class='glyphicon glyphicon-download'></span></a>
+                    </div>
             </div>
         </div>
     </div>
@@ -59,7 +62,8 @@ export default {
   data() {
     return {
       ticket: {},
-      ticketComments: []
+      ticketComments: [],
+      ticketDocuments: []
     };
   },
   async mounted() {
@@ -82,9 +86,19 @@ export default {
     } catch (error) {
       console.log(error);
     }
+    try {
+      let response = await this.$http.get(
+        'api/File/GetBlobListAsync?ticketReference=' + this.ticketReference
+      );
+      console.log('Document response: ', response.data);
+      this.ticketDocuments = response.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 </script>
 
 <style>
 </style>
+`
