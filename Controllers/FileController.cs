@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace dotnetVue.Controllers
 {
@@ -33,6 +34,18 @@ namespace dotnetVue.Controllers
             return blobContainer;
         }
 
+        private async Task<CloudBlockBlob> GetBlockBlobAsync(string blobName)
+        {
+            //Container
+            CloudBlobContainer blobContainer = await GetContainerAsync();
+
+            //Blob
+            CloudBlockBlob blockBlob = blobContainer.GetBlockBlobReference(blobName);
+
+            return blockBlob;
+        }
+
+
         [HttpGet("[action]")]
         public async Task<List<AzureBlobItem>> GetBlobListAsync(int ticketReference, bool useFlatListing = true)
         {
@@ -56,14 +69,29 @@ namespace dotnetVue.Controllers
             return list.OrderBy(i => i.Folder).ThenBy(i => i.Name).ToList();
         }
 
-        // public async Task<IActionResult> Download(string blobName, string name)
-        // {
-        //     if (string.IsNullOrEmpty(blobName))
-        //         return Content("Blob Name not present");
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Download(string blobName)
+        {
+            CloudBlockBlob blockBlob = await GetBlockBlobAsync(blobName);
+            if (string.IsNullOrEmpty(blobName))
+                return Content("Blob Name not present");
 
-        //     var stream = await blobStorage.DownloadAsync(blobName);
-        //     return File(stream.ToArray(), "application/octet-stream", name);
-        // }
+            var stream = await DownloadAsync(blobName);
+            return File(stream.ToArray(), "application/octet-stream", blobName);
+        }
+
+        public async Task<MemoryStream> DownloadAsync(string blobName)
+        {
+            //Blob
+            CloudBlockBlob blockBlob = await GetBlockBlobAsync(blobName);
+
+            //Download
+            using (var stream = new MemoryStream())
+            {
+                await blockBlob.DownloadToStreamAsync(stream);
+                return stream;
+            }
+        }
 
     }
     public class FileDetails

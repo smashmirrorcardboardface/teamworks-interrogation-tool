@@ -1,4 +1,4 @@
-﻿<template>
+﻿`<template>
     <div style="margin-top:10px; float:left;">
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color: #0990ac; color:white;">
@@ -49,7 +49,7 @@
             <div style="max-height: 300px; min-height:100px; overflow-y: scroll;">
                     <div v-for="ticketDocument in ticketDocuments" :key="ticketDocument.blobName" style=" font-size: 1.2em; padding:6px; margin-left:10px; width:50%">
                         <div style="float:left">{{ticketDocument.blobName}}</div>
-                        <div style="float:right">Download <span class='glyphicon glyphicon-download'></span></div>
+                        <a style="float:right; cursor:pointer;" :href="'/api/File/Download?blobName='+ticketDocument.blobName">Download <span class='glyphicon glyphicon-download'></span></a>
                     </div>
             </div>
         </div>
@@ -101,3 +101,4 @@ export default {
 
 <style>
 </style>
+`
